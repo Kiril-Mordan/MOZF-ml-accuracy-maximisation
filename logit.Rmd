@@ -1,0 +1,12 @@
+---
+title: "Logit model"
+output: html_notebook
+---
+
+```{r}
+log_model <- glm( Grupujaca ~ W3 + W7 + W8 + W9 + W14 + W15, data = uczaca, family = binomial(link="logit"))
+
+log_prog <- predict(log_model,newdata=testowa,type = "response")
+log_pred <- as.factor(ifelse(log_prog > 0.5,"Zdrowe","Upadle"))
+confusionMatrix(log_pred,as.factor(testowa$Grupujaca))
+```

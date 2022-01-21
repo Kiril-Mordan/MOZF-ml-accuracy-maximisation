@@ -1,0 +1,77 @@
+---
+title: "Data import"
+output: html_notebook
+---
+
+```{r}
+library(caret)
+```
+
+```{r}
+dane <- read.csv2("dane.csv",sep=";")
+```
+
+
+```{r}
+set.seed(123)
+
+dane$Grupujaca <- ifelse(dane$Grupujaca == "Upadlo\x9c\xe6","Upadle","Zdrowe")
+
+ktoreuczaca <- c(sample(1:500,350),sample(501:1000,350))
+uczaca <- dane[ktoreuczaca,]
+testowa <- dane[-ktoreuczaca,]
+```
+
+```{r}
+summary(uczaca)
+```
+```{r}
+(sredniedlagrup<-aggregate(uczaca[,-20],uczaca["Grupujaca"],FUN=mean))
+(medianydlagrup<-aggregate(uczaca[,-20],uczaca["Grupujaca"],FUN=median))
+```
+
+```{r}
+uczaca <- uczaca[,5:20]
+testowa <- testowa[,5:20]
+macierzkorelacji <- cor(uczaca[,1:15])
+
+wysokiekor <- findCorrelation(macierzkorelacji,0.90)
+```
+
+```{r}
+uczaca <- uczaca[,-wysokiekor]
+testowa <- testowa[,-wysokiekor]
+```
+
+```{r}
+for (i in 1:12){
+boxplot(uczaca[, i] ~ uczaca$Grupujaca,
+ylab = names(uczaca[i]),
+xlab = "Kondycja finansowa")
+}
+```
+```{r}
+sapply(1:12,\(i){shapiro.test(uczaca[,i])})
+```
+
+```{r}
+for (i in 1:12){
+print(histogram(uczaca[, i]))
+}
+```
+
+```{r}
+#sapply(1:12,\(i){wilcox.test(uczaca[, i] ~ uczaca$Grupujaca)})
+for (i in 1:12){
+print(names(uczaca[i]))
+print(wilcox.test(uczaca[, i] ~ uczaca$Grupujaca))
+}
+```
+```{r}
+uczaca <- uczaca[,-c(2,5)]
+testowa <- testowa[,-c(2,5)]
+
+uczaca$Grupujaca <- as.factor(uczaca$Grupujaca)
+testowa$Grupujaca <- as.factor(testowa$Grupujaca)
+```
+

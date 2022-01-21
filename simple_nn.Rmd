@@ -1,0 +1,22 @@
+---
+title: "Simple neural network"
+output: html_notebook
+---
+
+```{r}
+library(neuralnet)
+library(caret)
+```
+
+
+```{r}
+set.seed(28)
+nn <- neuralnet(Grupujaca~.,data=uczaca,hidden=1,act.fct = "tanh",rep=1)
+plot(nn)
+nn_prog <- compute(nn,testowa)
+
+nnpred <- ifelse(nn_prog$net.result > 0.5,"Zdrowe","Upadle")
+
+confusionMatrix(as.factor(nnpred[,1]),testowa$Grupujaca)
+```
+

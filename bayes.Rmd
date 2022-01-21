@@ -1,0 +1,18 @@
+---
+title: "Naive bayes"
+output: html_notebook
+---
+
+```{r}
+library(e1071)
+```
+
+```{r}
+naive_model <- naiveBayes(Grupujaca ~ W1 + W3 + W4 + W7 + W9 + W11 + W14, data = uczaca) 
+
+naive_pred <- predict(naive_model,testowa)
+confusionMatrix(naive_pred,testowa$Grupujaca)
+```
+
+
+

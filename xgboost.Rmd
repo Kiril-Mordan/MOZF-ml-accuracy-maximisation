@@ -1,0 +1,46 @@
+---
+title: "Boosting"
+output: html_notebook
+---
+
+
+```{r}
+library(xgboost)
+library(Matrix)
+```
+
+```{r}
+train <- sparse.model.matrix(Grupujaca~ .-1, data = uczaca) 
+test <- sparse.model.matrix(Grupujaca~ .-1, data = testowa) 
+
+label_uczaca <- as.numeric(uczaca$Grupujaca)-1
+
+dtrain <- xgb.DMatrix(data = train,label = label_uczaca) 
+
+label_testowa <- as.numeric(testowa$Grupujaca)-1
+dtest <- xgb.DMatrix(data = test,label = label_testowa) 
+```
+
+
+```{r}
+params <- list(booster = "gbtree", objective = "binary:logistic", eta=0.39, gamma=0, max_depth=7, min_child_weight=5, subsample=1, colsample_bytree=1)
+
+xgbcv <- xgb.cv( params = params, data = dtrain, nrounds = 100, nfold = 5, showsd = F, stratified = T,verbose = 0, early.stop.round = 10, maximize = F)
+
+xgb1 <- xgb.train (params = params, data = dtrain, nrounds = 25,watchlist = list(train=dtrain), early.stop.round = 20, maximize = F , eval_metric = "error",verbose = 0)
+
+xgbpred <- predict (xgb1,dtest)
+
+xgbpred <- as.factor(ifelse(xgbpred > 0.5,"Zdrowe","Upadle"))
+
+confusionMatrix(xgbpred,testowa$Grupujaca)
+```
+
+
+
+
+
+
+
+
+

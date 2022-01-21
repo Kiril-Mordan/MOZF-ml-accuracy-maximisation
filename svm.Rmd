@@ -1,0 +1,15 @@
+---
+title: "Support vector machines"
+output: html_notebook
+---
+
+```{r}
+library(e1071)
+```
+
+```{r}
+svm_model = svm(Grupujaca ~W1 + W3 + W4 + W7 + W15, data = uczaca)
+
+svmpred <- predict(svm_model,testowa,type="class")
+confusionMatrix(svmpred,testowa$Grupujaca)
+```
