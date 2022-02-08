@@ -1,5 +1,5 @@
 # MOZF-ml-accuracy-maximisation
-Five selected ml classifiers maximisation for done on some financial data. 
+Five selected ml classifiers maximisation done on some financial data. 
 
 1.Random forest boosting (eXtreme Gradient Boosting Training) 
 	- trafność: 90.67%
